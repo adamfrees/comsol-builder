@@ -31,7 +31,7 @@ public class test_device {
         }
         currentHeight += Double.parseDouble(layerHeights[i]);
       }
-      String dxfFile = "/Users/adamfrees/Dropbox/_UW/Comsol_auto/qqd-v2-6.dxf";
+      String dxfFile = "qqd-v2-6.dxf";
       String dxfLayers[] = {"L1","L2","L3"};
       Double dxfLayerHeights[] = {33.,44.,55.};
       int extrudeCount = 0;
