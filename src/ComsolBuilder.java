@@ -37,7 +37,7 @@ public class ComsolBuilder {
     }
   }
 
-  public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[]){
+  public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[], Double scale){
     int extrudeCount = 0;
     model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
     for (int i = dxfLayers.length; i>0; i--) {
@@ -51,7 +51,7 @@ public class ComsolBuilder {
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layerselection", "selected");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layers", new String[]{dxfLayers[j-1]});
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("sca1", "Scale");
-        model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").set("isotropic", 1000);//TODO: should be optional
+        model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").set("isotropic", scale);
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").selection("input").set("imp1");
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("r1", "Rectangle");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("r1").set("base", "center");
@@ -82,5 +82,8 @@ public class ComsolBuilder {
         model.geom("geom1").feature("ext"+extrudeCount).set("contributeto", "ElectrodeSel");
       }
     }
+  }
+  public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[]){
+    addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1.);
   }
 }

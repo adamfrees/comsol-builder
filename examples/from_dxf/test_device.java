@@ -20,7 +20,7 @@ public class test_device {
       String dxfLayers[] = {"L1","L2","L3"};
       Double dxfLayerHeights[] = {33.,44.,55.};
 
-      builder.addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights);
+      builder.addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1000.);
 
       builder.model.geom("geom1").run("fin");
 
