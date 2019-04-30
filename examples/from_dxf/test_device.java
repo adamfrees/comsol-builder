@@ -13,60 +13,14 @@ public class test_device {
       ComsolBuilder builder = new ComsolBuilder(xDims,yDims);
       String layerLabels[] = {"SiGeBuffer","SiWell","SiGeSpacer","Oxide"};
       String layerHeights[] = {"170.","9.","40.","60."};
-      Double currentHeight = 279.;
 
       builder.addHeterostructure(layerLabels,layerHeights);
 
       String dxfFile = "qqd-v2-6.dxf";
       String dxfLayers[] = {"L1","L2","L3"};
       Double dxfLayerHeights[] = {33.,44.,55.};
-      int extrudeCount = 0;
-      //To delete:
-      String xDim = "1000.";
-      String yDim = "1000.";
-      builder.model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
-      for (int i = dxfLayers.length; i>0; i--) {
-        for (int j = 1; j<=i; j++) {
-          extrudeCount++;
 
-          builder.model.geom("geom1").create("wp"+extrudeCount, "WorkPlane");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).set("quickz", currentHeight-55.);
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().create("imp1", "Import");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("filename", dxfFile);
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layerselection", "selected");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layers", new String[]{dxfLayers[j-1]});
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().create("sca1", "Scale");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").set("isotropic", 1000);
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").selection("input").set("imp1");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().create("r1", "Rectangle");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("r1").set("base", "center");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("r1").set("size", new String[]{xDim, yDim});
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().create("int1", "Intersection");
-          builder.model.geom("geom1").feature("wp"+extrudeCount).geom().feature("int1").selection("input").set("r1", "sca1");
-
-          builder.model.geom("geom1").create("ext"+extrudeCount, "Extrude");
-          builder.model.geom("geom1").feature("ext"+extrudeCount).set("workplane", "wp"+extrudeCount);
-          builder.model.geom("geom1").feature("ext"+extrudeCount).selection("input").set("wp"+extrudeCount);
-          builder.model.geom("geom1").feature("ext"+extrudeCount).setIndex("distance", dxfLayerHeights[j-1], 0);
-
-        }
-        if (i>1) {
-          builder.model.geom("geom1").create("dif"+i, "Difference");
-          builder.model.geom("geom1").feature("dif"+i).selection("input").set("ext"+(extrudeCount));
-          if (i==3) {
-            builder.model.geom("geom1").feature("dif"+i).selection("input2").set("ext"+(extrudeCount-2), "ext"+(extrudeCount-1));
-          }
-          if (i==2) {
-            builder.model.geom("geom1").feature("dif"+i).selection("input2").set("ext"+(extrudeCount-1));
-          }
-          builder.model.geom("geom1").feature("dif"+i).set("selresult", true);
-          builder.model.geom("geom1").feature("dif"+i).set("contributeto", "ElectrodeSel");
-        }
-        else {
-          builder.model.geom("geom1").feature("ext"+extrudeCount).set("selresult", true);
-          builder.model.geom("geom1").feature("ext"+extrudeCount).set("contributeto", "ElectrodeSel");
-        }
-      }
+      builder.addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights);
       builder.model.geom("geom1").run("fin");
 
 
