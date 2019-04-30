@@ -2,6 +2,7 @@ package comsolbuilder;
 
 import com.comsol.model.*;
 import com.comsol.model.util.*;
+import java.io.File;
 
 public class ComsolBuilder {
   public Model model;
@@ -85,5 +86,16 @@ public class ComsolBuilder {
   }
   public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[]){
     addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1.);
+  }
+
+  public void addElectrodesSTL(String stlFolder){
+    System.out.println("test printlns");
+    File folder = new File(stlFolder);
+    File[] listOfFiles = folder.listFiles();
+    for (File file : listOfFiles) {
+    if (file.isFile()) {
+        System.out.println(file.getName());
+        }
+    }
   }
 }

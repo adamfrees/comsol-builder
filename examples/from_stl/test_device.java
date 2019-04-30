@@ -16,11 +16,9 @@ public class test_device {
 
       builder.addHeterostructure(layerLabels,layerHeights);
 
-      String dxfFile = "qqd-v2-6.dxf";
-      String dxfLayers[] = {"L1","L2","L3"};
-      Double dxfLayerHeights[] = {33.,44.,55.};
+      String stlFolder = "/Users/adamfrees/Documents/comsol-builder/examples/from_stl/stl_files";//TODO: make this a relative path?
 
-      builder.addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1000.);
+      builder.addElectrodesSTL(stlFolder);
 
       builder.model.geom("geom1").run("fin");
 
