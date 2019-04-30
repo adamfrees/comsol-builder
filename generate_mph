@@ -3,13 +3,17 @@
 comsolPath="/Applications/COMSOL54/Multiphysics"
 javaFile="examples/from_dxf/test_device.java"
 
-echo $PWD
-
+echo "Compiling comsolbuiler package..."
 javac -d . -cp "$comsolPath/plugins/*" -source 8 -target 8 src/*
+echo "Compiling "$javaFile" into "${javaFile::${#javaFile}-5}".class..."
 javac -cp "$comsolPath/plugins/*":"." -source 8 -target 8 $javaFile
+echo "Building comsolbuiler.jar..."
 jar -cvf comsolbuilder.jar comsolbuilder/*
+echo "Starting COMSOL..."
 $comsolPath/bin/comsol batch -dev $PWD/comsolbuilder.jar -inputfile $PWD/${javaFile::${#javaFile}-5}.class -outputfile $PWD/${javaFile::${#javaFile}-5}.mph
 
+echo "Completed! Removing files..."
 rm -r comsolbuilder
 rm ${javaFile::${#javaFile}-5}.class
 rm comsolbuilder.jar
+echo "Done!"
