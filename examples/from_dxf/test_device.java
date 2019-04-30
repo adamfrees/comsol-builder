@@ -21,6 +21,7 @@ public class test_device {
       Double dxfLayerHeights[] = {33.,44.,55.};
 
       builder.addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights);
+
       builder.model.geom("geom1").run("fin");
 
 
