@@ -8,31 +8,23 @@ public class test_device {
       run();
    }
    public static Model run() {
-      ComsolBuilder builder = new ComsolBuilder();
-      String xDim = "1000.";
-      String yDim = "1000.";
+      Double xDims = 1000.;
+      Double yDims = 1000.;
+      ComsolBuilder builder = new ComsolBuilder(xDims,yDims);
       String layerLabels[] = {"SiGeBuffer","SiWell","SiGeSpacer","Oxide"};
       String layerHeights[] = {"170.","9.","40.","60."};
-      Double currentHeight = 0.;
-      builder.model.component("comp1").geom("geom1").selection().create("SiGeSel", "CumulativeSelection");
-      builder.model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
+      Double currentHeight = 279.;
 
-      for (int i = 0; i<layerLabels.length; i++) {
-        builder.model.geom("geom1").feature().create(layerLabels[i], "Block");
-        builder.model.geom("geom1").feature(layerLabels[i]).set("size", new String[]{xDim, yDim, layerHeights[i]});
-        builder.model.geom("geom1").feature(layerLabels[i]).set("pos", new String[]{"0.", "0.", Double.toString(currentHeight+Double.parseDouble(layerHeights[i])/2.)});
-        builder.model.geom("geom1").feature(layerLabels[i]).set("base", "center");
-        builder.model.geom("geom1").feature(layerLabels[i]).set("selresult", true);
-        if (i==0 || i==2) {
-          builder.model.geom("geom1").feature(layerLabels[i]).set("selresult", true);
-          builder.model.geom("geom1").feature(layerLabels[i]).set("contributeto", "SiGeSel");
-        }
-        currentHeight += Double.parseDouble(layerHeights[i]);
-      }
+      builder.addHeterostructure(layerLabels,layerHeights);
+
       String dxfFile = "qqd-v2-6.dxf";
       String dxfLayers[] = {"L1","L2","L3"};
       Double dxfLayerHeights[] = {33.,44.,55.};
       int extrudeCount = 0;
+      //To delete:
+      String xDim = "1000.";
+      String yDim = "1000.";
+      builder.model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
       for (int i = dxfLayers.length; i>0; i--) {
         for (int j = 1; j<=i; j++) {
           extrudeCount++;
