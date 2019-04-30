@@ -1,14 +1,14 @@
 import com.comsol.model.*;
 import com.comsol.model.util.*;
-import comsolbuilder.ComsolBuilder;
+import comsolbuilder.*;
 
 public class test_device {
 
    public static void main(String[] args) {
       run();
    }
-   public static model run() {
-      ComsolBuilder builder = ComsolBuilder()
+   public static Model run() {
+      ComsolBuilder builder = new ComsolBuilder();
       String xDim = "1000.";
       String yDim = "1000.";
       String layerLabels[] = {"SiGeBuffer","SiWell","SiGeSpacer","Oxide"};

@@ -1,7 +1,7 @@
+package comsolbuilder;
+
 import com.comsol.model.*;
 import com.comsol.model.util.*;
-
-package comsolbuilder;
 
 public class ComsolBuilder {
   public Model model;
