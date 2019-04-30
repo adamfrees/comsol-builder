@@ -45,13 +45,13 @@ public class ComsolBuilder {
         extrudeCount++;
 
         model.geom("geom1").create("wp"+extrudeCount, "WorkPlane");
-        model.geom("geom1").feature("wp"+extrudeCount).set("quickz", currentHeight-55.);
+        model.geom("geom1").feature("wp"+extrudeCount).set("quickz", currentHeight-55.);//TODO: change, shouldn't be 55
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("imp1", "Import");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("filename", dxfFile);
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layerselection", "selected");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layers", new String[]{dxfLayers[j-1]});
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("sca1", "Scale");
-        model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").set("isotropic", 1000);
+        model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").set("isotropic", 1000);//TODO: should be optional
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").selection("input").set("imp1");
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("r1", "Rectangle");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("r1").set("base", "center");
