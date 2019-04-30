@@ -45,7 +45,7 @@ public class ComsolBuilder {
         extrudeCount++;
 
         model.geom("geom1").create("wp"+extrudeCount, "WorkPlane");
-        model.geom("geom1").feature("wp"+extrudeCount).set("quickz", currentHeight-55.);//TODO: change, shouldn't be 55
+        model.geom("geom1").feature("wp"+extrudeCount).set("quickz", currentHeight-dxfLayerHeights[dxfLayerHeights.length - 1]);
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("imp1", "Import");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("filename", dxfFile);
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layerselection", "selected");
