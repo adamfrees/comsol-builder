@@ -151,8 +151,11 @@ public class ComsolBuilder {
     model.component("comp1").geom("geom1").feature("mov1").selection("input").named("ElectrodeSel");
     model.component("comp1").geom("geom1").feature("mov1").set("displz", startHeight);
 
+  }
 
-
-
+  public void addMaterial(ComsolMaterial mat, String domain){
+    model.component("comp1").material().create(mat.name, "Common");
+    model.component("comp1").material(mat.name).selection().named(domain);
+    model.component("comp1").material(mat.name).propertyGroup("def").set("relpermittivity", new String[]{Double.toString(mat.relpermittivity)});
   }
 }

@@ -9,6 +9,9 @@ public class test_device {
    }
    public static Model run() {
       ComsolMaterial si = new ComsolMaterial("Si",11.7);
+      ComsolMaterial sige = new ComsolMaterial("Si",13.19);
+      ComsolMaterial al02 = new ComsolMaterial("AlO2",9.);
+      ComsolMaterial al = new ComsolMaterial("Al",1.);
       Double xDims = 1000.;
       Double yDims = 1000.;
       ComsolBuilder builder = new ComsolBuilder(xDims,yDims);
@@ -25,10 +28,10 @@ public class test_device {
 
       builder.model.geom("geom1").run("fin");
 
-
-      builder.model.component("comp1").material().create("Si", "Common");
-      builder.model.component("comp1").material("Si").selection().named("geom1_SiWell_dom");
-      builder.model.component("comp1").material("Si").propertyGroup("def").set("relpermittivity", new String[]{"11.7"});
+      builder.addMaterial(si,"geom1_SiWell_dom");
+      //builder.model.component("comp1").material().create("Si", "Common");
+      //builder.model.component("comp1").material("Si").selection().named("geom1_SiWell_dom");
+      //builder.model.component("comp1").material("Si").propertyGroup("def").set("relpermittivity", new String[]{"11.7"});
 
 
       builder.model.component("comp1").material().create("SiGe", "Common");
