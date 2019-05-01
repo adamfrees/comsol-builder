@@ -17,7 +17,7 @@ public class test_device {
 
       builder.addHeterostructure(layerLabels,layerHeights);
 
-      String dxfFile = "qqd-v2-6.dxf";
+      String dxfFile = "/Users/adamfrees/Documents/comsol-builder/examples/from_dxf/qqd-v2-6.dxf";
       String dxfLayers[] = {"L1","L2","L3"};
       Double dxfLayerHeights[] = {33.,44.,55.};
 
