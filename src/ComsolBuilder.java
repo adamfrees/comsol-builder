@@ -2,6 +2,7 @@ package comsolbuilder;
 
 import com.comsol.model.*;
 import com.comsol.model.util.*;
+import java.io.File;
 
 public class ComsolBuilder {
   public Model model;
@@ -85,5 +86,73 @@ public class ComsolBuilder {
   }
   public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[]){
     addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1.);
+  }
+
+  public void addElectrodesSTL(String stlFolder, Double startHeight){
+
+    model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
+
+    File folder = new File(stlFolder);
+    File[] listOfFiles = folder.listFiles();
+
+    int importCount = 1;
+
+    for (File file : listOfFiles) {
+      if (file.isFile() && file.getName().endsWith(".stl")) {
+          System.out.println(folder+"/"+file.getName());
+          model.component("comp1").geom("geom1").create("imp"+importCount, "Import");
+          model.component("comp1").geom("geom1").feature("imp"+importCount).set("filename", folder+"/"+file.getName());
+
+          model.component().create("mcomp"+importCount, "MeshComponent");
+          model.geom().create("mgeom"+importCount,3);
+          model.mesh().create("mpart"+importCount, "mgeom"+importCount);
+          model.component("comp1").geom("geom1").feature("imp"+importCount).set("mesh", "mpart"+importCount);
+
+          model.mesh("mpart"+importCount).create("imp"+importCount, "Import");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("filename", folder+"/"+file.getName());
+
+          model.component("comp1").geom("geom1").feature("imp"+importCount).set("meshfilename", "");
+
+          model.mesh("mpart"+importCount).run();
+
+          model.component("comp1").geom("geom1").run("imp"+importCount);
+
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "auto");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("stltoltype", "auto");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "detectfaces");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facemaxangle", "0.0");
+
+          model.component("comp1").geom("geom1").run("imp"+importCount);
+
+          model.geom("geom1").feature("imp"+importCount).set("contributeto", "ElectrodeSel");
+
+          importCount += 1;
+
+
+          }
+    }
+    model.component("comp1").geom("geom1").create("blk1", "Block");
+    model.component("comp1").geom("geom1").feature("blk1").set("base", "center");
+    model.component("comp1").geom("geom1").feature("blk1").set("size", new String[]{xDim, yDim, "200."});
+
+    model.component("comp1").geom("geom1").create("blk2", "Block");
+    model.component("comp1").geom("geom1").feature("blk2").set("base", "center");
+    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"4000.", "4000.", "200."});
+
+    model.component("comp1").geom("geom1").create("dif1", "Difference");
+    model.component("comp1").geom("geom1").feature("dif1").selection("input").set("blk2");
+    model.component("comp1").geom("geom1").feature("dif1").selection("input2").set("blk1");
+
+    model.component("comp1").geom("geom1").create("dif2", "Difference");
+    model.component("comp1").geom("geom1").feature("dif2").selection("input").named("ElectrodeSel");
+    model.component("comp1").geom("geom1").feature("dif2").selection("input2").set("dif1");
+
+    model.component("comp1").geom("geom1").create("mov1", "Move");
+    model.component("comp1").geom("geom1").feature("mov1").selection("input").named("ElectrodeSel");
+    model.component("comp1").geom("geom1").feature("mov1").set("displz", startHeight);
+
+
+
+
   }
 }
