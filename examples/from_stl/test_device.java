@@ -26,7 +26,7 @@ public class test_device {
 
       builder.model.geom("geom1").run("fin");
 
-      builder.addMaterial(si,"geom1_SiWell_dom");
+      builder.addMaterial(si,"geom1_SiWell_dom");//TODO: user shouldn't have to know domain names
       builder.addMaterial(sige,"geom1_SiGeSel_dom");
       builder.addMaterial(alO2,"geom1_Oxide_dom");
       builder.addMaterial(al,"geom1_ElectrodeSel_dom");
