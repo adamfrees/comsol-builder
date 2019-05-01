@@ -8,6 +8,7 @@ public class test_device {
       run();
    }
    public static Model run() {
+      ComsolMaterial si = new ComsolMaterial("Si",11.7);
       Double xDims = 1000.;
       Double yDims = 1000.;
       ComsolBuilder builder = new ComsolBuilder(xDims,yDims);

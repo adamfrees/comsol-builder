@@ -1,10 +1,10 @@
 package comsolbuilder;
 
-public class Material {
+public class ComsolMaterial {
   public String name;
   public Double relpermittivity;
 
-  public Material(String nameInput, Double relpermittivityInput){
+  public ComsolMaterial(String nameInput, Double relpermittivityInput){
     name = nameInput;
     relpermittivity = relpermittivityInput;
   }
