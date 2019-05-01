@@ -89,13 +89,44 @@ public class ComsolBuilder {
   }
 
   public void addElectrodesSTL(String stlFolder){
-    System.out.println("test printlns");
+
+    model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
+
     File folder = new File(stlFolder);
     File[] listOfFiles = folder.listFiles();
+
+    int importCount = 1;
+
     for (File file : listOfFiles) {
-    if (file.isFile()) {
-        System.out.println(file.getName());
-        }
+      if (file.isFile() && file.getName().endsWith(".stl")) {
+          System.out.println(folder+"/"+file.getName());
+          model.component("comp1").geom("geom1").create("imp"+importCount, "Import");
+          model.component("comp1").geom("geom1").feature("imp"+importCount).set("filename", folder+"/"+file.getName());
+
+          model.component().create("mcomp"+importCount, "MeshComponent");
+          model.geom().create("mgeom"+importCount,3);
+          model.mesh().create("mpart"+importCount, "mgeom"+importCount);
+          model.component("comp1").geom("geom1").feature("imp"+importCount).set("mesh", "mpart"+importCount);
+
+          model.mesh("mpart"+importCount).create("imp"+importCount, "Import");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("filename", folder+"/"+file.getName());
+
+          model.component("comp1").geom("geom1").feature("imp"+importCount).set("meshfilename", "");
+
+          model.mesh("mpart"+importCount).run();
+
+          model.component("comp1").geom("geom1").run("imp"+importCount);
+
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "auto");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("stltoltype", "auto");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "detectfaces");
+          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facemaxangle", "0.0");
+
+          model.component("comp1").geom("geom1").run("imp"+importCount);
+          importCount += 1;
+
+
+          }
     }
   }
 }
