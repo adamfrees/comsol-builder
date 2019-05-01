@@ -18,7 +18,7 @@ public class test_device {
 
       String stlFolder = "/Users/adamfrees/Documents/comsol-builder/examples/from_stl/stl_files";//TODO: make this a relative path?
 
-      builder.addElectrodesSTL(stlFolder);
+      builder.addElectrodesSTL(stlFolder,224.);//TODO: change 224 to variable
 
       builder.model.geom("geom1").run("fin");
 

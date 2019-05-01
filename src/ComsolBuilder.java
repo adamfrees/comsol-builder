@@ -88,7 +88,7 @@ public class ComsolBuilder {
     addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1.);
   }
 
-  public void addElectrodesSTL(String stlFolder){
+  public void addElectrodesSTL(String stlFolder, Double startHeight){
 
     model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
 
@@ -123,10 +123,36 @@ public class ComsolBuilder {
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("facemaxangle", "0.0");
 
           model.component("comp1").geom("geom1").run("imp"+importCount);
+
+          model.geom("geom1").feature("imp"+importCount).set("contributeto", "ElectrodeSel");
+
           importCount += 1;
 
 
           }
     }
+    model.component("comp1").geom("geom1").create("blk1", "Block");
+    model.component("comp1").geom("geom1").feature("blk1").set("base", "center");
+    model.component("comp1").geom("geom1").feature("blk1").set("size", new String[]{xDim, yDim, "200."});
+
+    model.component("comp1").geom("geom1").create("blk2", "Block");
+    model.component("comp1").geom("geom1").feature("blk2").set("base", "center");
+    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"4000.", "4000.", "200."});
+
+    model.component("comp1").geom("geom1").create("dif1", "Difference");
+    model.component("comp1").geom("geom1").feature("dif1").selection("input").set("blk2");
+    model.component("comp1").geom("geom1").feature("dif1").selection("input2").set("blk1");
+
+    model.component("comp1").geom("geom1").create("dif2", "Difference");
+    model.component("comp1").geom("geom1").feature("dif2").selection("input").named("ElectrodeSel");
+    model.component("comp1").geom("geom1").feature("dif2").selection("input2").set("dif1");
+
+    model.component("comp1").geom("geom1").create("mov1", "Move");
+    model.component("comp1").geom("geom1").feature("mov1").selection("input").named("ElectrodeSel");
+    model.component("comp1").geom("geom1").feature("mov1").set("displz", startHeight);
+
+
+
+
   }
 }
