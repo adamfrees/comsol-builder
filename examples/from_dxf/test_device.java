@@ -19,9 +19,6 @@ public class test_device {
       String layerHeights[] = {"170.","9.","40.","60."};
 
       builder.addHeterostructure(layerLabels,layerHeights);
-      String path = ComsolBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-      System.out.println("Working Directory = " +
-              path);
 
       String dxfFile = "/Users/adamfrees/Documents/comsol-builder/examples/from_dxf/qqd-v2-6.dxf"; //TODO: make this a relative path?
       String dxfLayers[] = {"L1","L2","L3"};
