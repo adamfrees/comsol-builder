@@ -1,8 +1,12 @@
 # comsol-builder
 This repository is intended to automate the construction of COMSOL models of semiconductor quantum dot devices.
 
-To build the example, run:
+To build the examples, run:
 
 `./generate_mph examples/from_dxf/test_device.java`
+
+or
+
+`./generate_mph examples/from_stl/test_device.java`
 
 from the `comsol-builder` directory.
