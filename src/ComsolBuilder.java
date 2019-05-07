@@ -158,4 +158,17 @@ public class ComsolBuilder {
     model.component("comp1").material(mat.name).selection().named(domain);
     model.component("comp1").material(mat.name).propertyGroup("def").set("relpermittivity", new String[]{Double.toString(mat.relpermittivity)});
   }
+
+  public void selectVoltages(String totalDomain){
+    int blkDomainSelectionEntities[] = model.selection(totalDomain).entities(3);
+
+    for (int selNumber = 0; selNumber<blkDomainSelectionEntities.length; selNumber++) {
+      model.component("comp1").selection().create("sel"+(selNumber+1), "Explicit");
+      model.component("comp1").selection("sel"+(selNumber+1)).geom("geom1", 3, 2, new String[]{"exterior"});
+      model.component("comp1").selection("sel"+(selNumber+1)).set(blkDomainSelectionEntities[selNumber]);
+      model.component("comp1").physics("es").create("pot"+(selNumber+1), "ElectricPotential", 2);
+      model.component("comp1").physics("es").feature("pot"+(selNumber+1)).selection().named("sel"+(selNumber+1));
+
+    }
+  }
 }

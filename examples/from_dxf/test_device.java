@@ -2,8 +2,6 @@ import com.comsol.model.*;
 import com.comsol.model.util.*;
 import comsolbuilder.*;
 
-import java.net.URLDecoder;
-
 public class test_device {
 
    public static void main(String[] args) {
@@ -24,9 +22,6 @@ public class test_device {
       String path = ComsolBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
       System.out.println("Working Directory = " +
               path);
-      //String decodedPath = URLDecoder.decode(path, "UTF-8");
-      //System.out.println("Working Directory = " +
-      //        decodedPath);
 
       String dxfFile = "/Users/adamfrees/Documents/comsol-builder/examples/from_dxf/qqd-v2-6.dxf"; //TODO: make this a relative path?
       String dxfLayers[] = {"L1","L2","L3"};
@@ -44,7 +39,7 @@ public class test_device {
 
       builder.model.physics().create("es", "Electrostatics", "geom1");
 
-
+      builder.selectVoltages("geom1_ElectrodeSel_dom");
 
       return builder.model;
    }
