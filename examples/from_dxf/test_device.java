@@ -44,6 +44,19 @@ public class test_device {
 
       builder.model.physics().create("es", "Electrostatics", "geom1");
 
+      int blkDomainSelectionEntities[] = builder.model.selection("geom1_ElectrodeSel_dom").entities(3);
+
+      for (int selNumber = 0; selNumber<blkDomainSelectionEntities.length; selNumber++) {
+        builder.model.component("comp1").selection().create("sel"+(selNumber+1), "Explicit");
+        builder.model.component("comp1").selection("sel"+(selNumber+1)).geom("geom1", 3, 2, new String[]{"exterior"});
+        builder.model.component("comp1").selection("sel"+(selNumber+1)).set(blkDomainSelectionEntities[selNumber]);
+        builder.model.component("comp1").physics("es").create("pot"+(selNumber+1), "ElectricPotential", 2);
+        builder.model.component("comp1").physics("es").feature("pot"+(selNumber+1)).selection().named("sel"+(selNumber+1));
+
+      }
+
+      //System.out.println(Arrays.toString(blkDomainSelectionEntities));
+
 
 
       return builder.model;
