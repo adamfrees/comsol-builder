@@ -3,6 +3,6 @@
 .DS_Store
 
 #COMSOL files
-.mph
-.mph.*
+*.mph
+*.mph.*
 
