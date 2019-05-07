@@ -2,6 +2,8 @@ import com.comsol.model.*;
 import com.comsol.model.util.*;
 import comsolbuilder.*;
 
+import java.net.URLDecoder;
+
 public class test_device {
 
    public static void main(String[] args) {
@@ -19,8 +21,14 @@ public class test_device {
       String layerHeights[] = {"170.","9.","40.","60."};
 
       builder.addHeterostructure(layerLabels,layerHeights);
+      String path = ComsolBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+      System.out.println("Working Directory = " +
+              path);
+      //String decodedPath = URLDecoder.decode(path, "UTF-8");
+      //System.out.println("Working Directory = " +
+      //        decodedPath);
 
-      String dxfFile = "/Users/adamfrees/Documents/comsol-builder/examples/from_dxf/qqd-v2-6.dxf";
+      String dxfFile = "/Users/adamfrees/Documents/comsol-builder/examples/from_dxf/qqd-v2-6.dxf"; //TODO: make this a relative path?
       String dxfLayers[] = {"L1","L2","L3"};
       Double dxfLayerHeights[] = {33.,44.,55.};
 
@@ -28,7 +36,7 @@ public class test_device {
 
       builder.model.geom("geom1").run("fin");
 
-      builder.addMaterial(si,"geom1_SiWell_dom");
+      builder.addMaterial(si,"geom1_SiWell_dom");//TODO: user shouldn't have to know domain names
       builder.addMaterial(sige,"geom1_SiGeSel_dom");
       builder.addMaterial(alO2,"geom1_Oxide_dom");
       builder.addMaterial(al,"geom1_ElectrodeSel_dom");
