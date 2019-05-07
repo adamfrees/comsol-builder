@@ -8,10 +8,10 @@ public class test_device {
       run();
    }
    public static Model run() {
-     ComsolMaterial si = new ComsolMaterial("Si",11.7);
-     ComsolMaterial sige = new ComsolMaterial("SiGe",13.19);
-     ComsolMaterial alO2 = new ComsolMaterial("AlO2",9.);
-     ComsolMaterial al = new ComsolMaterial("Al",1.);
+      ComsolMaterial si = new ComsolMaterial("Si",11.7);
+      ComsolMaterial sige = new ComsolMaterial("SiGe",13.19);
+      ComsolMaterial alO2 = new ComsolMaterial("AlO2",9.);
+      ComsolMaterial al = new ComsolMaterial("Al",1.);
       Double xDims = 1000.;
       Double yDims = 1000.;
       ComsolBuilder builder = new ComsolBuilder(xDims,yDims);
@@ -33,7 +33,7 @@ public class test_device {
 
       builder.model.physics().create("es", "Electrostatics", "geom1");
 
-
+      builder.selectVoltages("geom1_ElectrodeSel_dom");
 
       return builder.model;
    }
