@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+
+# Macro Begin: dxf2Sketch.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
+import FreeCAD
+import dxfReader #To properly import dxf, need to use legacy importer
+import importDXF
+import Draft
+
+dxfFilename = u"/path/to/dxf/file/input.dxf"
+saveFilename = u"/path/to/freeCAD/file/output.FCStd"
+doc = App.newDocument("MyDesign")
+
+# import DXF
+
+importDXF.processdxf(doc,dxfFilename)
+
+# Switch to shapes
+
+for obj in doc.Objects:
+    Draft.makeSketch(obj,autoconstraints=True)
+    doc.removeObject(obj.Name)
+FreeCAD.ActiveDocument.recompute()
+
+# Center dxf design
+
+minX = 1.e6
+maxX = -1.e6
+minY = 1.e6
+maxY = -1.e6
+for obj in doc.Objects:
+    minX = min(obj.Shape.BoundBox.XMin,minX)
+    minY = min(obj.Shape.BoundBox.YMin,minY)
+    maxX = max(obj.Shape.BoundBox.XMax,maxX)
+    maxY = max(obj.Shape.BoundBox.YMax,maxY)
+
+shiftX = -0.5*(minX+maxX)
+shiftY = -0.5*(minY+maxY)
+
+Draft.move(doc.Objects,FreeCAD.Vector(shiftX, shiftY, 0))
+
+# Save file
+
+App.getDocument("MyDesign").saveAs(saveFilename)
+
+# Macro End: dxf2Sketch.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
