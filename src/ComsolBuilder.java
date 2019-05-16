@@ -4,11 +4,36 @@ import com.comsol.model.*;
 import com.comsol.model.util.*;
 import java.io.File;
 
+/**
+* An instance of the ComsolBuilder class is an object
+* which can build a COMSOL model. The purpose of This
+* class is to abstract away the nasty COMSOL API calls.
+*
+* @author  Adam Frees
+*/
 public class ComsolBuilder {
+  /**
+  * COMSOL model that will be saved as a .mph file.
+  */
   public Model model;
+  /**
+  * Length (in nm) along the x direction.
+  */
   public String xDim;
+  /**
+  * Length (in nm) along the y direction.
+  */
   public String yDim;
+  /**
+  * Height (in nm) along the z direction.
+  */
   public Double currentHeight;
+
+  /**
+  * The constructor for the ComsolBuilder object.
+  * @param xDimInput Length (in nm) along the x direction.
+  * @param yDimInput Length (in nm) along the y direction.
+  */
 
   public ComsolBuilder(Double xDimInput, Double yDimInput) {
     model = ModelUtil.create("Model");
@@ -20,6 +45,12 @@ public class ComsolBuilder {
     currentHeight = 0.;
 
   }
+
+  /**
+  * Adds layers to comsol model.
+  * @param layerLabels Labels of layers used.
+  * @param layerHeights Height (in nm) of each layer.
+  */
 
   public void addHeterostructure(String layerLabels[], String layerHeights[]){
     model.component("comp1").geom("geom1").selection().create("SiGeSel", "CumulativeSelection");
@@ -37,6 +68,14 @@ public class ComsolBuilder {
       currentHeight += Double.parseDouble(layerHeights[i]);
     }
   }
+
+  /**
+  * Imports and extrudes DXF File
+  * @param dxfFile Path to dxf file (cannot be a relative path).
+  * @param dxfLayers Names of layers in dxf file, in the order that they should be built.
+  * @param dxfLayerHeights Height of each layer.
+  * @param scale Factor to scale DXF file (e.g. 1000 to transfer from um to nm).
+  */
 
   public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[], Double scale){
     int extrudeCount = 0;
@@ -84,9 +123,23 @@ public class ComsolBuilder {
       }
     }
   }
+
+  /**
+  * Imports and extrudes DXF File (without scale factor)
+  * @param dxfFile Path to dxf file (cannot be a relative path).
+  * @param dxfLayers Names of layers in dxf file, in the order that they should be built.
+  * @param dxfLayerHeights Height of each layer.
+  */
+
   public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[]){
     addElectrodesDXF(dxfFile,dxfLayers,dxfLayerHeights,1.);
   }
+
+  /**
+  * Imports stl files.
+  * @param stlFolder Path to folder containing stl files (cannot be a relative path).
+  * @param startHeight Height (in nm) at which the electrodes start.
+  */
 
   public void addElectrodesSTL(String stlFolder, Double startHeight){
 
@@ -153,11 +206,22 @@ public class ComsolBuilder {
 
   }
 
+  /**
+  * Associates a material with a domain within the model
+  * @param mat Material.
+  * @param domain Domain.
+  */
+
   public void addMaterial(ComsolMaterial mat, String domain){
     model.component("comp1").material().create(mat.name, "Common");
     model.component("comp1").material(mat.name).selection().named(domain);
     model.component("comp1").material(mat.name).propertyGroup("def").set("relpermittivity", new String[]{Double.toString(mat.relpermittivity)});
   }
+
+  /**
+  * Creates a potential node in COMSOL for each domain in the domain group.
+  * @param totalDomain Domain group of electrodes.
+  */
 
   public void selectVoltages(String totalDomain){
     int blkDomainSelectionEntities[] = model.selection(totalDomain).entities(3);
