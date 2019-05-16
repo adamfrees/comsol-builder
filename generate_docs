@@ -1,0 +1,5 @@
+#!/bin/bash
+
+comsolPath="/Applications/COMSOL54/Multiphysics"
+
+javadoc -d docs -cp "$comsolPath/plugins/*" src/*
