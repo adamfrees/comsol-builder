@@ -80,25 +80,35 @@ public class ComsolBuilder {
   public void addElectrodesDXF(String dxfFile, String dxfLayers[], Double dxfLayerHeights[], Double scale){
     int extrudeCount = 0;
     model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
+    /*
+    * These nested loops create the layers multiple times. We create the top-most
+    * layer first by creating all of the other layers and subtracting them from
+    * the top-most. This process is repeated for the second top-most layer and so
+    * on until all layers are formed.
+    */
     for (int i = dxfLayers.length; i>0; i--) {
       for (int j = 1; j<=i; j++) {
         extrudeCount++;
 
+        //Create workplane
         model.geom("geom1").create("wp"+extrudeCount, "WorkPlane");
         model.geom("geom1").feature("wp"+extrudeCount).set("quickz", currentHeight-dxfLayerHeights[dxfLayerHeights.length - 1]);
+        //Import correct layer of dxf file
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("imp1", "Import");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("filename", dxfFile);
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layerselection", "selected");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("imp1").set("layers", new String[]{dxfLayers[j-1]});
+        //Scale electrodes
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("sca1", "Scale");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").set("isotropic", scale);
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("sca1").selection("input").set("imp1");
+        //Trim outside of xDim / yDim.
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("r1", "Rectangle");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("r1").set("base", "center");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("r1").set("size", new String[]{xDim, yDim});
         model.geom("geom1").feature("wp"+extrudeCount).geom().create("int1", "Intersection");
         model.geom("geom1").feature("wp"+extrudeCount).geom().feature("int1").selection("input").set("r1", "sca1");
-
+        //Extrude electrodes
         model.geom("geom1").create("ext"+extrudeCount, "Extrude");
         model.geom("geom1").feature("ext"+extrudeCount).set("workplane", "wp"+extrudeCount);
         model.geom("geom1").feature("ext"+extrudeCount).selection("input").set("wp"+extrudeCount);
@@ -108,7 +118,7 @@ public class ComsolBuilder {
       if (i>1) {
         model.geom("geom1").create("dif"+i, "Difference");
         model.geom("geom1").feature("dif"+i).selection("input").set("ext"+(extrudeCount));
-        if (i==3) {
+        if (i==3) {//TODO: doesn't handle 4 layers
           model.geom("geom1").feature("dif"+i).selection("input2").set("ext"+(extrudeCount-2), "ext"+(extrudeCount-1));
         }
         if (i==2) {
@@ -153,30 +163,30 @@ public class ComsolBuilder {
     for (File file : listOfFiles) {
       if (file.isFile() && file.getName().endsWith(".stl")) {
           System.out.println(folder+"/"+file.getName());
+          //Create import node
           model.component("comp1").geom("geom1").create("imp"+importCount, "Import");
           model.component("comp1").geom("geom1").feature("imp"+importCount).set("filename", folder+"/"+file.getName());
-
+          //Create mesh node
           model.component().create("mcomp"+importCount, "MeshComponent");
           model.geom().create("mgeom"+importCount,3);
           model.mesh().create("mpart"+importCount, "mgeom"+importCount);
           model.component("comp1").geom("geom1").feature("imp"+importCount).set("mesh", "mpart"+importCount);
-
+          //Associate import node with mesh node
           model.mesh("mpart"+importCount).create("imp"+importCount, "Import");
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("filename", folder+"/"+file.getName());
-
           model.component("comp1").geom("geom1").feature("imp"+importCount).set("meshfilename", "");
-
+          //Create mesh of import
           model.mesh("mpart"+importCount).run();
-
+          //import file
           model.component("comp1").geom("geom1").run("imp"+importCount);
-
+          //Change settings of mesh so that we get a reasonable mesh
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "auto");
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("stltoltype", "auto");
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "detectfaces");
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("facemaxangle", "0.0");
-
+          //Re-import file
           model.component("comp1").geom("geom1").run("imp"+importCount);
-
+          //associate domains with correct domain group
           model.geom("geom1").feature("imp"+importCount).set("contributeto", "ElectrodeSel");
 
           importCount += 1;
@@ -184,22 +194,26 @@ public class ComsolBuilder {
 
           }
     }
+    /*
+    * Next we want to trim the electrodes to xDim / yDim
+    */
+    //Create box to keep
     model.component("comp1").geom("geom1").create("blk1", "Block");
     model.component("comp1").geom("geom1").feature("blk1").set("base", "center");
     model.component("comp1").geom("geom1").feature("blk1").set("size", new String[]{xDim, yDim, "200."});
-
+    //Create larger box
     model.component("comp1").geom("geom1").create("blk2", "Block");
     model.component("comp1").geom("geom1").feature("blk2").set("base", "center");
-    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"4000.", "4000.", "200."});
-
+    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"4000.", "4000.", "200."});//TODO: this box should contain all of stl files; does it always?
+    //Take difference - this is the domain we want to remove
     model.component("comp1").geom("geom1").create("dif1", "Difference");
     model.component("comp1").geom("geom1").feature("dif1").selection("input").set("blk2");
     model.component("comp1").geom("geom1").feature("dif1").selection("input2").set("blk1");
-
+    //remove electrode domains in domain we want to remove
     model.component("comp1").geom("geom1").create("dif2", "Difference");
     model.component("comp1").geom("geom1").feature("dif2").selection("input").named("ElectrodeSel");
     model.component("comp1").geom("geom1").feature("dif2").selection("input2").set("dif1");
-
+    //Now that we have trimmed the geometry, move it to correct spot.
     model.component("comp1").geom("geom1").create("mov1", "Move");
     model.component("comp1").geom("geom1").feature("mov1").selection("input").named("ElectrodeSel");
     model.component("comp1").geom("geom1").feature("mov1").set("displz", startHeight);
