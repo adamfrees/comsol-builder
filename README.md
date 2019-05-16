@@ -17,3 +17,4 @@ It is **highly recommended** for first-time users to start by building a model w
 
 Instructions on seting up and performing the pre-rendering steps can be found [here](https://github.com/adamfrees/comsol-builder/wiki/With-pre-rendering-(FreeCAD-STL)).
 
+Documentation for the Java comsol-builder package can be found at [https://adamfrees.github.io/comsol-builder/](https://adamfrees.github.io/comsol-builder/).
