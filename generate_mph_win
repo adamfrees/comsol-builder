@@ -1,0 +1,19 @@
+#!/bin/bash
+
+javaFile=$1
+comsolPath="c:/Program Files/COMSOL/COMSOL53/Multiphysics"
+
+echo "Compiling comsolbuiler package..."
+javac -d . -cp "$comsolPath/plugins/*" -source 8 -target 8 src/*
+echo "Compiling "$javaFile" into "${javaFile::${#javaFile}-5}".class..."
+javac -classpath "$comsolPath/plugins/*;." -source 8 -target 8 $javaFile
+echo "Building comsolbuiler.jar..."
+jar -cvf comsolbuilder.jar comsolbuilder/*
+echo "Starting COMSOL..."
+"$comsolPath/bin/win64/comsolbatch" -dev $PWD/comsolbuilder.jar -inputfile $PWD/${javaFile::${#javaFile}-5}.class -outputfile $PWD/${javaFile::${#javaFile}-5}.mph
+
+echo "Completed! Removing files..."
+rm -r comsolbuilder
+rm ${javaFile::${#javaFile}-5}.class
+rm comsolbuilder.jar
+echo "Done!"
