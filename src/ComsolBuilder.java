@@ -149,9 +149,10 @@ public class ComsolBuilder {
   * Imports stl files.
   * @param stlFolder Path to folder containing stl files (cannot be a relative path).
   * @param startHeight Height (in nm) at which the electrodes start.
+  * @param scale Factor to scale STL file (e.g. 1000 to transfer from um to nm).
   */
 
-  public void addElectrodesSTL(String stlFolder, Double startHeight){
+  public void addElectrodesSTL(String stlFolder, Double startHeight, Double scale){
 
     model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
 
@@ -218,6 +219,16 @@ public class ComsolBuilder {
     model.component("comp1").geom("geom1").feature("mov1").selection("input").named("ElectrodeSel");
     model.component("comp1").geom("geom1").feature("mov1").set("displz", startHeight);
 
+  }
+
+  /**
+  * Imports and extrudes STL File (without scale factor)
+  * @param stlFolder Path to folder containing stl files (cannot be a relative path).
+  * @param startHeight Height (in nm) at which the electrodes start.
+  */
+
+  public void addElectrodesSTL(String stlFolder, Double startHeight){
+    addElectrodesSTL(stlFolder,startHeight,1.);
   }
 
   /**
