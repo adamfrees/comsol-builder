@@ -152,7 +152,7 @@ public class ComsolBuilder {
   * @param scale Factor to scale STL file (e.g. 1000 to transfer from um to nm).
   */
 
-  public void addElectrodesSTL(String stlFolder, Double startHeight, Double scale){
+  public void addElectrodesSTL(String stlFolder, Double startHeight, int scale){
 
     model.component("comp1").geom("geom1").selection().create("ElectrodeSel", "CumulativeSelection");
 
@@ -198,6 +198,11 @@ public class ComsolBuilder {
     /*
     * Next we want to trim the electrodes to xDim / yDim
     */
+    //scale by amount perscribed.
+    model.component("comp1").geom("geom1").create("sca1", "Scale");
+    model.component("comp1").geom("geom1").feature("sca1").selection("input").named("ElectrodeSel");
+    model.component("comp1").geom("geom1").feature("sca1").set("type", "anisotropic");
+    model.component("comp1").geom("geom1").feature("sca1").set("anisotropic", new int[]{scale, scale, 1});
     //Create box to keep
     model.component("comp1").geom("geom1").create("blk1", "Block");
     model.component("comp1").geom("geom1").feature("blk1").set("base", "center");
@@ -219,6 +224,8 @@ public class ComsolBuilder {
     model.component("comp1").geom("geom1").feature("mov1").selection("input").named("ElectrodeSel");
     model.component("comp1").geom("geom1").feature("mov1").set("displz", startHeight);
 
+
+
   }
 
   /**
@@ -228,7 +235,7 @@ public class ComsolBuilder {
   */
 
   public void addElectrodesSTL(String stlFolder, Double startHeight){
-    addElectrodesSTL(stlFolder,startHeight,1.);
+    addElectrodesSTL(stlFolder,startHeight,1);
   }
 
   /**
